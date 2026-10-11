@@ -90,6 +90,8 @@ footer li a:hover{color:var(--glow)}
 .slide-in{max-width:1160px;margin:0 auto;width:100%}
 .slide h2{text-align:left;font-size:clamp(1.6rem,4vw,3rem)}
 .slide p{margin-bottom:22px}
+/* Hide blank banner action pills while retaining full-banner click links */
+.slide .btn:empty{display:none!important}
 @media(max-width:700px){.slide{padding:12px 44px}.slide h2{font-size:clamp(1rem,4vw,1.5rem);margin-bottom:6px}.slide p{font-size:clamp(.7rem,2.5vw,.9rem);margin-bottom:8px}.slide .btn{padding:7px 12px;font-size:.8rem}.slide-in{grid-template-columns:1fr}}
 .arr{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:1px solid var(--glow);background:rgba(1,5,4,.7);color:#fff;font-size:1.4rem;cursor:pointer;z-index:2}
 .arr:hover{box-shadow:0 0 18px rgba(49,255,130,.8)}

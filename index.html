@@ -112,6 +112,9 @@ footer li a:hover{color:var(--glow)}
 /* Floating support launcher */
 .support-float{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:max(24px,env(safe-area-inset-bottom));z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:12px;pointer-events:none}
 .support-float>*{pointer-events:auto}.support-toggle{width:68px;height:68px;border-radius:50%;border:2px solid #31ff82;background:radial-gradient(circle,#124d30,#010504 80%);padding:4px;box-shadow:0 0 22px #19d65f88,0 6px 24px #000b;cursor:pointer;animation:supportFloat 3s ease-in-out infinite;display:grid;place-items:center;overflow:hidden}.support-toggle svg{width:100%;height:100%;object-fit:contain}.support-toggle:hover{box-shadow:0 0 32px #31ff82}.support-menu{display:none;min-width:min(280px,calc(100vw - 35px));padding:12px;background:#06140ff5;border:1px solid #31ff82;border-radius:18px;box-shadow:0 12px 40px #000c,0 0 20px #19d65f44;backdrop-filter:blur(12px)}.support-float.open .support-menu{display:grid;gap:8px;animation:supportAppear .22s ease-out}.support-menu-title{font:700 15px Manrope,sans-serif;color:#31ff82;padding:4px 8px 8px}.support-option{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #205538;background:#0b2119;border-radius:11px;color:#e6f0ed;text-decoration:none;font:600 14px Manrope,sans-serif;transition:background .2s,transform .2s}.support-option:hover{background:#155234;transform:translateX(-3px)}.support-option:before{content:'↗';color:#31ff82;font-size:19px}.support-option[hidden]{display:none!important}@keyframes supportFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}@keyframes supportAppear{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@media(max-width:600px){.support-toggle{width:60px;height:60px}.support-float{right:14px;bottom:max(18px,env(safe-area-inset-bottom))}}@media(prefers-reduced-motion:reduce){.support-toggle,.support-menu{animation:none!important}}
+
+/* Cricket feature directly below the main slider */
+.cricket-feature{position:relative;isolation:isolate;min-height:clamp(400px,34vw,600px);display:flex;align-items:center;justify-content:center;text-align:center;padding:70px 24px;background-color:#010c07;background-position:center;background-size:cover;background-repeat:no-repeat;border-block:1px solid rgba(49,255,130,.2)}.cricket-feature:before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(0,9,4,.68),rgba(0,20,8,.34),rgba(0,9,4,.68))}.cricket-content{max-width:850px;position:relative;z-index:1}.cricket-feature h2{font-family:Manrope,Arial,sans-serif;font-weight:900;font-size:clamp(30px,3.6vw,54px);line-height:1.13;color:#fff;text-transform:none;letter-spacing:-.03em;margin:0 auto 24px}.cricket-feature p{font-size:clamp(15px,1.2vw,18px);line-height:1.75;max-width:700px;margin:0 auto 32px;color:#e2eee7}.cricket-actions{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}.cricket-actions .btn{min-width:200px}.cricket-actions .ghost{background:#020c08;border-color:#31ff82;color:#fff}@media(max-width:600px){.cricket-feature{min-height:420px;padding:60px 20px}.cricket-actions .btn{min-width:0;width:100%;max-width:290px}}
 </style>
 </head>
 <body>
@@ -145,16 +148,13 @@ footer li a:hover{color:var(--glow)}
   </div>
 </div></section>
 
-<section class="alt" id="services"><div class="wrap">
-  <h2>One Trusted Name. Four Destinations.</h2>
-  <p class="sub">Four service areas under the $ DOLLOR brand. Rename each to match your offering.</p>
-  <div class="grid g4">
-    <div class="card"><span class="tag">Tier 1</span><h3>Service One</h3><p>Short description of the first service and who it is for.</p><a class="btn ghost" href="#contact">Learn more</a></div>
-    <div class="card"><span class="tag">Tier 2</span><h3>Service Two</h3><p>Short description of the second service and what makes it different.</p><a class="btn ghost" href="#contact">Learn more</a></div>
-    <div class="card"><span class="tag">Tier 3</span><h3>Service Three</h3><p>Short description of the third service and the main benefit.</p><a class="btn ghost" href="#contact">Learn more</a></div>
-    <div class="card"><span class="tag">Tier 4</span><h3>Service Four</h3><p>Short description of the fourth service and how to get started.</p><a class="btn ghost" href="#contact">Learn more</a></div>
-  </div>
-</div></section>
+<section class="cricket-feature" id="services" data-image="" style="background-image:linear-gradient(90deg,rgba(0,12,7,.88),rgba(0,25,12,.62),rgba(0,12,7,.88))">
+ <div class="cricket-content">
+  <h2>India's Most Trusted Online Cricket ID Provider</h2>
+  <p>Join $ DOLLOR for a smooth cricket gaming experience. Connect with our team on WhatsApp to learn more about our services.</p>
+  <div class="cricket-actions"><a class="btn" href="#contact">Get Online Cricket ID</a><a class="btn ghost" href="#how">Explore Our Services</a></div>
+ </div>
+</section>
 
 <section><div class="wrap">
   <h2>Why Choose $ DOLLOR?</h2>

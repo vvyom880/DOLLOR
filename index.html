@@ -159,6 +159,7 @@ footer li a:hover{color:var(--glow)}
 .support-float .telegram-unit{display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:auto}.telegram-unit .telegram-toggle{width:68px;height:68px;border:2px solid #31ff82;border-radius:50%;padding:0;background:#010504;box-shadow:0 0 22px #19d65f88,0 6px 24px #000b;display:grid;place-items:center;cursor:pointer;overflow:hidden;animation:supportFloat 3s ease-in-out infinite}.telegram-toggle img{display:block;width:100%;height:100%;object-fit:cover}.telegram-unit .telegram-menu{display:none;min-width:min(280px,calc(100vw - 35px));padding:12px;background:#06140ff5;border:1px solid #31ff82;border-radius:18px;box-shadow:0 12px 40px #000c,0 0 20px #19d65f44;backdrop-filter:blur(12px)}.telegram-unit.open .telegram-menu{display:grid;gap:8px;animation:supportAppear .22s ease-out}.telegram-unit .telegram-menu .support-option{display:flex}.telegram-unit .telegram-menu .support-option[aria-disabled="true"]{display:flex;opacity:.65;cursor:not-allowed}.telegram-unit .telegram-menu .support-option[hidden]{display:none}@media(max-width:600px){.telegram-unit .telegram-toggle{width:60px;height:60px}}@media(prefers-reduced-motion:reduce){.telegram-unit .telegram-toggle{animation:none}}
 
 /* Footer contact form */
+.footer-contact[hidden]{display:none!important}
 .footer-contact{margin:34px 0 30px;max-width:680px;border:1px solid #23d974;border-radius:19px;padding:28px;background:linear-gradient(145deg,#07140e,#030806);box-shadow:0 0 24px #10c45c13}
 .footer-contact h3{font:700 24px Arial,sans-serif;color:#eafff0;margin:0 0 10px}.footer-contact p{color:#abc3b3;margin:0 0 22px}
 .footer-contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.footer-contact-field{display:flex;flex-direction:column;gap:8px;min-width:0}.footer-contact-field.full{grid-column:1/-1}.footer-contact label{font:600 13px Arial,sans-serif;color:#eafff0}
@@ -322,7 +323,7 @@ footer li a:hover{color:var(--glow)}
     
     <div><h3>Legal and Support</h3><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms &amp; Conditions</a></li><li><a href="#contact">Customer Support</a></li></ul></div>
   </div>
-  <section class="footer-contact" id="footerContact" aria-labelledby="footerContactTitle">
+  <section class="footer-contact" hidden id="footerContact" aria-labelledby="footerContactTitle">
 <h3 id="footerContactTitle">Contact Us</h3><p>Whenever you need us, we're here for you!</p>
 <form id="footerContactForm">
 <div class="footer-contact-grid">
@@ -443,7 +444,12 @@ go(0);})();
 <script>
 (function(){
  const form=document.getElementById('footerContactForm'),status=document.getElementById('footerContactStatus'),phone=document.getElementById('contactPhone');if(!form)return;
- phone.addEventListener('input',()=>{phone.value=phone.value.replace(/\D/g,'').slice(0,10)});
+ const contactSection=document.getElementById('footerContact');
+ function openContact(){contactSection.hidden=false;requestAnimationFrame(()=>contactSection.scrollIntoView({behavior:'smooth',block:'start'}));}
+ document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href');if(href==='#contact'||href==='#footerContact'){e.preventDefault();openContact();if(location.hash!=='#contact')history.replaceState(null,'','#contact')}});
+ if(location.hash==='#contact'||location.hash==='#footerContact')openContact();
+ window.addEventListener('hashchange',()=>{if(location.hash==='#contact'||location.hash==='#footerContact')openContact()});
+  phone.addEventListener('input',()=>{phone.value=phone.value.replace(/\D/g,'').slice(0,10)});
  form.addEventListener('submit',async function(e){
   e.preventDefault();if(!form.reportValidity())return;
   if(!/^[0-9]{10}$/.test(phone.value)){status.textContent='Please enter exactly 10 digits';return}

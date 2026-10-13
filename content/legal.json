@@ -1,0 +1,20 @@
+{
+  "privacy": {
+    "title": "Privacy Policy",
+    "updated": "",
+    "intro": "This page explains how $ DOLLOR handles personal information. Replace this draft with your approved privacy policy.",
+    "body": "## Information We Collect\n- Contact details you submit through our contact form, including name, email, phone number and message.\n- Basic website usage information for analytics, where enabled.\n\n## How Information Is Used\n- To respond to support requests.\n- To operate and improve the website.\n\n## Data Security and Retention\nExplain how contact information is protected and how long it is retained.\n\n## Your Choices\nExplain how users can request access, correction or deletion of their information.\n\n## Contact\nProvide a support contact method."
+  },
+  "terms": {
+    "title": "Terms & Conditions",
+    "updated": "",
+    "intro": "Please read these terms before using the $ DOLLOR website. Replace this draft with your approved terms.",
+    "body": "## Website Use\nDescribe permitted website use and eligibility requirements.\n\n## Service Information\nExplain the scope and limitations of services.\n\n## User Responsibilities\nDescribe applicable user obligations.\n\n## Disclaimers\nInclude accurate disclaimers reviewed for your jurisdiction.\n\n## Changes to Terms\nExplain how changes will be communicated.\n\n## Contact\nProvide a support contact method."
+  },
+  "support": {
+    "title": "Customer Support",
+    "updated": "",
+    "intro": "Need help? Contact the $ DOLLOR support team using the options below.",
+    "body": "## How to Reach Us\nUse the Contact Us form in the website footer, or choose an available WhatsApp or Telegram agent.\n\n## Before Contacting Support\nDescribe the issue clearly and provide only information needed to help you.\n\n## Response Times\nAdd your actual support hours and response expectations.\n\n## Privacy\nDo not send passwords, OTPs, or sensitive payment credentials."
+  }
+}

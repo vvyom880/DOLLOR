@@ -157,6 +157,17 @@ footer li a:hover{color:var(--glow)}
 
 /* Telegram launcher stacked above WhatsApp */
 .support-float .telegram-unit{display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:auto}.telegram-unit .telegram-toggle{width:68px;height:68px;border:2px solid #31ff82;border-radius:50%;padding:0;background:#010504;box-shadow:0 0 22px #19d65f88,0 6px 24px #000b;display:grid;place-items:center;cursor:pointer;overflow:hidden;animation:supportFloat 3s ease-in-out infinite}.telegram-toggle img{display:block;width:100%;height:100%;object-fit:cover}.telegram-unit .telegram-menu{display:none;min-width:min(280px,calc(100vw - 35px));padding:12px;background:#06140ff5;border:1px solid #31ff82;border-radius:18px;box-shadow:0 12px 40px #000c,0 0 20px #19d65f44;backdrop-filter:blur(12px)}.telegram-unit.open .telegram-menu{display:grid;gap:8px;animation:supportAppear .22s ease-out}.telegram-unit .telegram-menu .support-option{display:flex}.telegram-unit .telegram-menu .support-option[aria-disabled="true"]{display:flex;opacity:.65;cursor:not-allowed}.telegram-unit .telegram-menu .support-option[hidden]{display:none}@media(max-width:600px){.telegram-unit .telegram-toggle{width:60px;height:60px}}@media(prefers-reduced-motion:reduce){.telegram-unit .telegram-toggle{animation:none}}
+
+/* Footer contact form */
+.footer-contact{margin:34px 0 30px;max-width:680px;border:1px solid #23d974;border-radius:19px;padding:28px;background:linear-gradient(145deg,#07140e,#030806);box-shadow:0 0 24px #10c45c13}
+.footer-contact h3{font:700 24px Arial,sans-serif;color:#eafff0;margin:0 0 10px}.footer-contact p{color:#abc3b3;margin:0 0 22px}
+.footer-contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.footer-contact-field{display:flex;flex-direction:column;gap:8px;min-width:0}.footer-contact-field.full{grid-column:1/-1}.footer-contact label{font:600 13px Arial,sans-serif;color:#eafff0}
+.footer-contact input,.footer-contact textarea,.footer-contact select{box-sizing:border-box;width:100%;min-width:0;background:#111713;color:white;border:1px solid #305b43;border-radius:10px;padding:13px 14px;font:15px Arial,sans-serif;outline:none}
+.footer-contact input:focus,.footer-contact textarea:focus,.footer-contact select:focus{border-color:#31ff82;box-shadow:0 0 0 2px #31ff8225}
+.footer-contact textarea{resize:vertical;min-height:130px}.footer-phone{display:flex;gap:8px}.footer-phone select{width:118px;flex:0 0 118px}
+.footer-contact button[type=submit]{display:block;margin:22px auto 0;background:linear-gradient(#36f18a,#10a74e);color:#03150a;border:0;border-radius:30px;padding:14px 35px;font-weight:800;cursor:pointer}
+.footer-contact button:disabled{opacity:.55;cursor:wait}.footer-contact-status{text-align:center;min-height:24px;margin-top:12px!important;font-size:13px}
+@media(max-width:600px){.footer-contact{padding:18px 15px}.footer-contact-grid{grid-template-columns:1fr}.footer-contact-field.full{grid-column:auto}.footer-phone select{width:100px;flex-basis:100px}}
 </style>
 </head>
 <body>
@@ -311,6 +322,16 @@ footer li a:hover{color:var(--glow)}
     
     <div><h3>Legal and Support</h3><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms &amp; Conditions</a></li><li><a href="#contact">Customer Support</a></li></ul></div>
   </div>
+  <section class="footer-contact" id="footerContact" aria-labelledby="footerContactTitle">
+<h3 id="footerContactTitle">Contact Us</h3><p>Whenever you need us, we're here for you!</p>
+<form id="footerContactForm">
+<div class="footer-contact-grid">
+<div class="footer-contact-field"><label for="contactFirst">First Name *</label><input id="contactFirst" name="first_name" placeholder="Enter your first name" maxlength="80" required autocomplete="given-name"></div>
+<div class="footer-contact-field"><label for="contactLast">Last Name *</label><input id="contactLast" name="last_name" placeholder="Enter your last name" maxlength="80" required autocomplete="family-name"></div>
+<div class="footer-contact-field full"><label for="contactEmail">Email Address *</label><input id="contactEmail" type="email" name="email" placeholder="Enter your email address" maxlength="254" required autocomplete="email"></div>
+<div class="footer-contact-field full"><label for="contactPhone">Phone Number * (10 digits)</label><div class="footer-phone"><select id="contactCountry" name="phone_country_code" aria-label="Country code"><option value="+91">🇮🇳 +91</option><option value="+1">🇺🇸 +1</option><option value="+44">🇬🇧 +44</option><option value="+971">🇦🇪 +971</option><option value="+61">🇦🇺 +61</option><option value="+977">🇳🇵 +977</option><option value="+880">🇧🇩 +880</option></select><input id="contactPhone" name="phone_number" type="tel" inputmode="numeric" pattern="[0-9]{10}" minlength="10" maxlength="10" placeholder="10-digit mobile number" required autocomplete="tel-national"></div></div>
+<div class="footer-contact-field full"><label for="contactMessage">Message *</label><textarea id="contactMessage" name="message" placeholder="Enter your message here" maxlength="3000" required></textarea></div>
+</div><button type="submit">✉ Send Message</button><p class="footer-contact-status" id="footerContactStatus" role="status" aria-live="polite"></p></form></section>
   <div class="footer-extras">
     <div class="footer-badges" id="footerBadges"><span class="footer-badge">18+ Users Only</span><span class="footer-badge">Responsive Support</span><span class="footer-badge">Responsible Play</span></div>
     <div class="footer-socials" id="footerSocials" aria-label="Social media links">
@@ -419,4 +440,19 @@ go(0);})();
 })();
 </script>
 <script defer="" src="/analytics-tracker.js"></script>
+<script>
+(function(){
+ const form=document.getElementById('footerContactForm'),status=document.getElementById('footerContactStatus'),phone=document.getElementById('contactPhone');if(!form)return;
+ phone.addEventListener('input',()=>{phone.value=phone.value.replace(/\D/g,'').slice(0,10)});
+ form.addEventListener('submit',async function(e){
+  e.preventDefault();if(!form.reportValidity())return;
+  if(!/^[0-9]{10}$/.test(phone.value)){status.textContent='Please enter exactly 10 digits';return}
+  const button=form.querySelector('button[type="submit"]');button.disabled=true;status.textContent='Sending message…';
+  const data=Object.fromEntries(new FormData(form).entries());
+  try{const r=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await r.json();if(!r.ok)throw Error(result.error||'Message could not be submitted');status.style.color='#31ff82';status.textContent='Message sent successfully!';form.reset()}
+  catch(err){status.style.color='#ff9292';status.textContent=err.message}
+  finally{button.disabled=false}
+ });
+})();
+</script>
 </body></html>

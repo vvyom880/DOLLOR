@@ -2,7 +2,7 @@ const crypto=require('crypto');
 const URL=process.env.SUPABASE_URL,KEY=process.env.SUPABASE_SERVICE_ROLE_KEY;
 function auth(req){const expected=process.env.ADMIN_PASSWORD||'';const supplied=(req.headers.authorization||'').replace(/^Bearer /i,'');const a=Buffer.from(expected),b=Buffer.from(supplied);return !!expected&&a.length===b.length&&crypto.timingSafeEqual(a,b)}
 function send(res,code,obj){return res.status(code).json(obj)}
-async function db(path,method='GET',body,prefer){if(!URL||!KEY)throw Error('Supabase environment missing');const r=await fetch(URL.replace(/\/$/,'')+'/rest/v1/'+path,{method,headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json',...(prefer?{Prefer:prefer}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})});const raw=await r.text();let data;try{data=JSON.parse(raw)}catch{data=raw}if(!r.ok)throw Error(data.message||data.error||'Database error');return data}
+async function db(path,method='GET',body,prefer){if(!URL||!KEY)throw Error('Supabase environment missing');const r=await fetch(URL.replace(/\/$/,'')+'/rest/v1/'+path,{method,headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json',...(prefer?{Prefer:prefer}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})});const raw=await r.text();let data;try{data=JSON.parse(raw)}catch{data=raw}if(!r.ok){const details=typeof data==='string'?data:typeof data?.message==='string'?data.message:typeof data?.error==='string'?data.error:JSON.stringify(data);throw Error('Supabase HTTP '+r.status+': '+String(details||'Database error').slice(0,400))}return data}
 const enc=encodeURIComponent;
 function dateOK(s){return /^\d{4}-\d{2}-\d{2}$/.test(s||'')&&!isNaN(Date.parse(s))&&new Date(s).toISOString().slice(0,10)===s}
 function range(a,b){if(!dateOK(a)||!dateOK(b))throw Error('Invalid date');const days=(Date.parse(b)-Date.parse(a))/86400000+1;if(days<1||days>30)throw Error('Date range must be 1 to 30 days')}
@@ -38,7 +38,7 @@ try{
  const users=await db('lottery_users?username=eq.'+enc(username)+'&select=id,username&limit=1');
  if(!users.length)return send(res,404,{error:'Username not found. Add it in Lottery Users first.'});
  const user=users[0];
- const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+ const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));const today=parts.year+'-'+parts.month+'-'+parts.day;
  let draws=await db('lottery_draws?draw_date=eq.'+today+'&select=*&order=created_at.asc&limit=1');
  if(!draws.length){try{await db('lottery_draws','POST',{draw_date:today,status:'open'},'return=representation')}catch(e){draws=await db('lottery_draws?draw_date=eq.'+today+'&select=*&limit=1');if(!draws.length)throw e}if(!draws.length)draws=await db('lottery_draws?draw_date=eq.'+today+'&select=*&limit=1')}
  const draw=draws[0];

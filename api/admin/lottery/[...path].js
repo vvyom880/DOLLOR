@@ -9,7 +9,15 @@ function range(a,b){if(!dateOK(a)||!dateOK(b))throw Error('Invalid date');const 
 function number(){return String(crypto.randomInt(10000)).padStart(4,'0')}
 function body(req){return typeof req.body==='string'?JSON.parse(req.body):req.body||{}}
 function who(req){return (req.headers['x-admin-id']||'admin').toString().slice(0,100)}
-module.exports=async function(req,res){res.setHeader('Cache-Control','no-store');if(!auth(req))return send(res,401,{error:'Admin authorization required'});const path=(req.query.path||[]).join('/');const b=body(req),admin=who(req);
+module.exports=async function(req,res){res.setHeader('Cache-Control','no-store');if(!auth(req))return send(res,401,{error:'Admin authorization required'});const routeParam = req.query.path;
+const path = Array.isArray(routeParam)
+  ? routeParam.join('/')
+  : typeof routeParam === 'string'
+    ? routeParam
+    : new URL(req.url, 'https://localhost')
+        .pathname
+        .replace(/^\/api\/admin\/lottery\/?/, '')
+        .replace(/\/$/, '');const b=body(req),admin=who(req);
 try{
  if(path==='health'&&req.method==='GET'){if(!URL||!KEY)return send(res,503,{ok:false,error:'SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY missing in Vercel environment'});try{const rows=await db('lottery_settings?select=id,ticket_price&limit=1');return send(res,200,{ok:true,database:'connected',lottery_tables:'available',settings:rows[0]||null})}catch(e){return send(res,503,{ok:false,error:'Lottery database not ready: '+String(e.message||e).slice(0,180),hint:'Run lottery-setup.sql in Supabase SQL Editor and verify Vercel Supabase variables'})}}
  if(path==='users'&&req.method==='GET'){const q=String(req.query.q||'').trim();return send(res,200,await db('lottery_users?select=id,username,created_at&order=created_at.desc&limit=500'+(q?'&username=ilike.*'+enc(q.replace(/[%*,]/g,''))+'*':'')))}

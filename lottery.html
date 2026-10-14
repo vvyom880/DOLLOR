@@ -1,1 +1,41 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lottery Tickets | $ DOLLOR</title><style>*{box-sizing:border-box}body{margin:0;background:#010a06;color:#e8fff0;font:15px Manrope,Arial,sans-serif}header{background:#062017;border-bottom:1px solid #19df76;padding:20px max(20px,5vw);display:flex;justify-content:space-between;align-items:center}a{color:#35ff8d}h1,h2{color:white}main{max-width:1000px;margin:auto;padding:35px 20px}.panel{background:#092016;border:1px solid #147e4b;border-radius:15px;padding:22px;margin:18px 0}.muted{color:#a7bcb2}input,button{font:inherit;border-radius:9px;padding:13px}input{background:#02110b;border:1px solid #247f50;color:white;max-width:100%}button{background:#20d970;border:0;color:#00150b;font-weight:800;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.ticket{display:inline-block;border:1px solid #25de7a;border-radius:10px;padding:12px 16px;margin:7px;font-size:22px;font-weight:800;letter-spacing:2px}.notice{border-left:3px solid #29ef8b;padding:14px;background:#07251a}</style></head><body><header><div id="lotteryLogo" style="width:160px;max-width:45vw;min-height:42px;display:flex;align-items:center"><strong style="color:#29ff8b;font-size:24px">$ DOLLOR</strong></div><a href="/">← Back to Home</a></header><main><h1>🎟 Lottery Tickets</h1><p class="muted">Secure date-wise lottery ticket history</p><div class="panel"><h2>My Tickets</h2><p class="notice">Ticket numbers are private. For your security, entering only a username is not enough to access them. Sign in using your verified account to view your tickets.</p><form id="search"><label>Username<br><input type="text" id="username" placeholder="Enter your username" maxlength="40" pattern="[A-Za-z0-9_.-]{3,40}" required autocomplete="username"></label><p class="muted">Username lookup requires verified account access.</p><div class="grid"><label>From Date<br><input type="date" id="from" required></label><label>To Date<br><input type="date" id="to" required></label></div><p><button type="submit">Show My Tickets</button></p></form><p id="status" role="status"></p><div id="results"></div></div></main><script>const form=document.querySelector('#search'),status=document.querySelector('#status'),results=document.querySelector('#results');const now=new Date().toISOString().slice(0,10);document.querySelector('#to').value=now;document.querySelector('#from').value=now;form.onsubmit=async e=>{e.preventDefault();results.replaceChildren();const from=document.querySelector('#from').value,to=document.querySelector('#to').value;const days=(Date.parse(to)-Date.parse(from))/86400000+1;if(days<1||days>30){status.textContent='Select 1–30 calendar days.';return}status.textContent='Username '+document.querySelector('#username').value+' entered. Secure account verification is required before tickets can be shown; this feature is not enabled yet.'};</script><script src="/dollor-engine.js"></script><script>try{if(window.DOLLOR&&document.getElementById("lotteryLogo")){document.getElementById("lotteryLogo").replaceChildren();window.DOLLOR.mountLogo(document.getElementById("lotteryLogo"),"100%")}}catch(e){document.getElementById("lotteryLogo").textContent="$ DOLLOR"}</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lottery Tickets | $ DOLLOR</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#010a06;color:#e8fff0;font:15px Manrope,Arial,sans-serif}header{background:#062017;border-bottom:1px solid #19df76;padding:20px max(20px,5vw);display:flex;justify-content:space-between;align-items:center}a{color:#35ff8d}h1,h2{color:white}main{max-width:1000px;margin:auto;padding:35px 20px}.panel{background:#092016;border:1px solid #147e4b;border-radius:15px;padding:22px;margin:18px 0}.muted{color:#a7bcb2}input,button{font:inherit;border-radius:9px;padding:13px}input{background:#02110b;border:1px solid #247f50;color:white;max-width:100%}button{background:#20d970;border:0;color:#00150b;font-weight:800;cursor:pointer}button:disabled{opacity:.6;cursor:wait}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.day{border:1px solid #147e4b;border-radius:9px;padding:13px;margin:9px 0;display:flex;justify-content:space-between;gap:12px}.count{font-weight:800;color:#35ff8d}.notice{border-left:3px solid #29ef8b;padding:14px;background:#07251a}
+</style>
+</head>
+<body>
+<header><div id="lotteryLogo" style="width:160px;max-width:45vw;min-height:42px;display:flex;align-items:center"><strong style="color:#29ff8b;font-size:24px">$ DOLLOR</strong></div><a href="/">← Back to Home</a></header>
+<main><h1>🎟 Lottery Tickets</h1><p class="muted">Date-wise lottery ticket history</p>
+<div class="panel"><h2>My Tickets</h2><p class="notice">Enter your username and select a date range of up to 30 days to view ticket counts.</p>
+<form id="search"><label>Username<br><input type="text" id="username" placeholder="Enter your username" maxlength="40" pattern="[A-Za-z0-9_.-]{3,40}" required autocomplete="username"></label>
+<div class="grid"><label>From Date<br><input type="date" id="from" required></label><label>To Date<br><input type="date" id="to" required></label></div>
+<p><button id="submit" type="submit">Show My Tickets</button></p></form><p id="status" role="status" aria-live="polite"></p><div id="results"></div></div></main>
+<script>
+const form=document.querySelector('#search'),status=document.querySelector('#status'),results=document.querySelector('#results'),button=document.querySelector('#submit');
+const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+document.querySelector('#to').value=today;document.querySelector('#from').value=today;
+form.addEventListener('submit',async e=>{
+ e.preventDefault();results.replaceChildren();
+ const username=document.querySelector('#username').value.trim(),from=document.querySelector('#from').value,to=document.querySelector('#to').value;
+ const days=(Date.parse(to)-Date.parse(from))/86400000+1;
+ if(!/^[A-Za-z0-9_.-]{3,40}$/.test(username)){status.textContent='Enter a valid username.';return}
+ if(!Number.isFinite(days)||days<1||days>30){status.textContent='Select 1–30 calendar days.';return}
+ button.disabled=true;status.textContent='Loading ticket counts…';
+ try{
+  const response=await fetch('/api/lottery/ticket-counts?'+new URLSearchParams({username,from,to}));
+  const data=await response.json();if(!response.ok)throw new Error(data.error||'Could not load ticket counts');
+  const heading=document.createElement('h3');heading.textContent='Ticket history for '+username;results.append(heading);
+  const total=document.createElement('p');total.textContent='Total tickets: '+data.total;results.append(total);
+  if(!data.days.length){const empty=document.createElement('p');empty.className='muted';empty.textContent='No tickets found for these dates.';results.append(empty)}
+  for(const entry of data.days){const item=document.createElement('div');item.className='day';const date=document.createElement('span');date.textContent=entry.date;const count=document.createElement('span');count.className='count';count.textContent=entry.count+' tickets';item.append(date,count);results.append(item)}
+  status.textContent='Results loaded.';
+ }catch(error){status.textContent=error.message||'Unable to load ticket counts'}finally{button.disabled=false}
+});
+</script>
+<script src="/dollor-engine.js"></script>
+<script>try{if(window.DOLLOR&&document.getElementById('lotteryLogo')){document.getElementById('lotteryLogo').replaceChildren();window.DOLLOR.mountLogo(document.getElementById('lotteryLogo'),'100%')}}catch(e){document.getElementById('lotteryLogo').textContent='$ DOLLOR'}</script>
+</body></html>

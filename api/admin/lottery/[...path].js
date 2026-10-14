@@ -33,13 +33,22 @@ try{
  const price=(await db('lottery_settings?id=eq.1&select=*'))[0];const amount=Number(b.amount),qty=amount/price.ticket_price;
  if(!Number.isSafeInteger(amount)||amount<=0||!Number.isSafeInteger(qty)||qty>10000)return send(res,400,{error:'Amount must be positive, divisible by ticket price, max 10000 tickets'});
  const prefixes=(await db('lottery_prefixes?is_active=eq.true&select=prefix&order=prefix.asc')).map(x=>x.prefix);if(!prefixes.length)return send(res,400,{error:'Configure prefixes first'});
- const draw=(await db('lottery_draws?id=eq.'+enc(b.draw_id)+'&select=*'))[0];if(!draw||draw.status!=='open'||draw.sales_close_at&&Date.parse(draw.sales_close_at)<=Date.now())return send(res,400,{error:'Draw closed or missing'});
+ const username=String(b.username||'').trim();
+ if(!/^[A-Za-z0-9_.-]{3,40}$/.test(username))return send(res,400,{error:'Enter a valid username'});
+ const users=await db('lottery_users?username=eq.'+enc(username)+'&select=id,username&limit=1');
+ if(!users.length)return send(res,404,{error:'Username not found. Add it in Lottery Users first.'});
+ const user=users[0];
+ const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+ let draws=await db('lottery_draws?draw_date=eq.'+today+'&select=*&order=created_at.asc&limit=1');
+ if(!draws.length){try{await db('lottery_draws','POST',{draw_date:today,status:'open'},'return=representation')}catch(e){draws=await db('lottery_draws?draw_date=eq.'+today+'&select=*&limit=1');if(!draws.length)throw e}if(!draws.length)draws=await db('lottery_draws?draw_date=eq.'+today+'&select=*&limit=1')}
+ const draw=draws[0];
+ if(!draw||draw.status!=='open'||draw.sales_close_at&&Date.parse(draw.sales_close_at)<=Date.now())return send(res,400,{error:'Today\'s lottery draw is closed'});
  const occupied=new Set((await db('lottery_tickets?draw_id=eq.'+enc(draw.id)+'&status=eq.active&select=ticket_number&limit=100000')).map(x=>x.ticket_number));if(prefixes.length*10000-occupied.size<qty)return send(res,409,{error:'Ticket number space exhausted'});
  const numbers=[],used=new Set();for(let i=0;i<qty;i++){let n;let attempts=0;do{const p=prefixes[price.prefix_allocation_mode==='random'?crypto.randomInt(prefixes.length):i%prefixes.length];n=p+number();if(++attempts>100000)throw Error('Number space exhausted')}while(occupied.has(n)||used.has(n));used.add(n);numbers.push(n)}
  if(path==='tickets/preview')return send(res,200,{ticket_price:price.ticket_price,quantity:qty,preview:numbers,notice:'Preview numbers are not reserved; final issuance generates fresh numbers'});
- if(!/^[0-9a-f-]{36}$/i.test(String(b.user_id||'')))return send(res,400,{error:'Select a user'});
+ 
  if(!/^[a-zA-Z0-9_-]{12,150}$/.test(String(b.idempotency_key||'')))return send(res,400,{error:'Valid idempotency key required'});
- const result=await db('rpc/lottery_issue','POST',{p_user:b.user_id,p_draw:draw.id,p_amount:amount,p_key:b.idempotency_key,p_admin:admin,p_numbers:numbers});return send(res,201,result)
+ const result=await db('rpc/lottery_issue','POST',{p_user:user.id,p_draw:draw.id,p_amount:amount,p_key:b.idempotency_key,p_admin:admin,p_numbers:numbers});return send(res,201,result)
  }
  if(path==='tickets'&&req.method==='GET'){const from=String(req.query.from||''),to=String(req.query.to||'');range(from,to);const page=Math.max(0,Math.min(100000,Number(req.query.page)||0)),limit=100;let q='lottery_tickets?select=id,ticket_number,ticket_date,status,user_id,draw_id,issuance_id,created_at,replaced_by_ticket_id&ticket_date=gte.'+from+'&ticket_date=lte.'+to+'&order=ticket_date.desc,created_at.desc&limit='+limit+'&offset='+(page*limit);if(req.query.user_id)q+='&user_id=eq.'+enc(req.query.user_id);if(req.query.status)q+='&status=eq.'+enc(req.query.status);if(req.query.draw_id)q+='&draw_id=eq.'+enc(req.query.draw_id);if(req.query.number)q+='&ticket_number=eq.'+enc(req.query.number);return send(res,200,await db(q))}
  if(path==='tickets/cancel-preview'&&req.method==='GET'){if(!dateOK(req.query.date))return send(res,400,{error:'Invalid date'});const user=req.query.user_id;const rows=await db('lottery_tickets?ticket_date=eq.'+req.query.date+'&status=eq.active&select=id&limit=100000'+(user?'&user_id=eq.'+enc(user):''));return send(res,200,{affected_count:rows.length,warning:rows.length===100000?'Count limit reached; narrow scope':null})}

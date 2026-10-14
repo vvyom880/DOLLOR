@@ -56,7 +56,7 @@ begin
  if length(trim(coalesce(p_reason,'')))<5 then raise exception 'Reason required';end if;
  if p_admin is null or p_admin='' then raise exception 'Admin required';end if;
  if exists(select 1 from lottery_tickets t join lottery_draws d on d.id=t.draw_id where t.ticket_date=p_day and (p_user is null or t.user_id=p_user) and t.status='active' and d.status='finalized') then raise exception 'Finalized draw requires formal correction';end if;
- select array_agg(id) into v_ids from lottery_tickets where ticket_date=p_day and (p_user is null or user_id=p_user) and status='active' for update;
+ select array_agg(id) into v_ids from (select id from lottery_tickets where ticket_date=p_day and (p_user is null or user_id=p_user) and status='active' for update) locked;
  v_count:=coalesce(cardinality(v_ids),0);
  if v_count=0 then return 0;end if;
  update lottery_tickets set status='canceled',canceled_at=now() where id=any(v_ids);

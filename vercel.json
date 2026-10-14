@@ -1,5 +1,11 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/api/admin/lottery/:path*",
+      "destination": "/api/admin/lottery?path=:path*"
+    }
+  ]
 }

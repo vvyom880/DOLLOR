@@ -14,7 +14,7 @@ const path = Array.isArray(routeParam)
   ? routeParam.join('/')
   : typeof routeParam === 'string'
     ? routeParam
-    : new URL(req.url, 'https://localhost')
+    : new globalThis.URL(req.url, 'https://localhost')
         .pathname
         .replace(/^\/api\/admin\/lottery\/?/, '')
         .replace(/\/$/, '');const b=body(req),admin=who(req);

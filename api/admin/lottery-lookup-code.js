@@ -13,7 +13,7 @@ module.exports=async(req,res)=>{
   const base=ROOT.replace(/\/$/,'')+'/rest/v1/';const headers={apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'};
   const u=await fetch(base+'lottery_users?select=id&username=ilike.'+encodeURIComponent(username)+'&limit=1',{headers});if(!u.ok)throw Error('User lookup failed');
   const users=await u.json();if(!users.length)return res.status(404).json({error:'User not found'});
-  const code=crypto.randomBytes(18).toString('base64url');
+  const code=String(crypto.randomInt(0,1000000)).padStart(6,'0');
   const r=await fetch(base+'lottery_lookup_codes?on_conflict=user_id',{method:'POST',headers:{...headers,Prefer:'resolution=merge-duplicates'},body:JSON.stringify({user_id:users[0].id,code_hash:hash(code),updated_at:new Date().toISOString()})});
   if(!r.ok)throw Error('Lookup code storage failed; run lookup-setup.sql');
   return res.status(200).json({username,lookup_code:code,message:'Save and share this code securely. Generating a new code invalidates the old one.'});

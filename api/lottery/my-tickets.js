@@ -8,7 +8,7 @@ module.exports=async(req,res)=>{
  try{
   const {username:raw,lookup_code:rawCode,from,to}=req.body||{};
   const username=String(raw||'').trim(),code=String(rawCode||'');
-  if(!/^[A-Za-z0-9_.-]{3,40}$/.test(username)||!(/^[A-Za-z0-9_-]{24}$/.test(code)))return res.status(400).json({error:'Invalid username or lookup code'});
+  if(!/^[A-Za-z0-9_.-]{3,40}$/.test(username)||!(/^[0-9]{6}$/.test(code)))return res.status(400).json({error:'Invalid username or lookup code'});
   if(!validDate(from)||!validDate(to))return res.status(400).json({error:'Invalid dates'});
   const days=(Date.parse(to)-Date.parse(from))/86400000+1;
   if(days<1||days>30)return res.status(400).json({error:'Select 1–30 calendar days'});

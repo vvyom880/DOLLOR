@@ -4,6 +4,10 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/landing",
+      "destination": "/landing.html"
+    },
+    {
       "source": "/api/admin/lottery/:path*",
       "destination": "/api/admin/lottery?path=:path*"
     }
